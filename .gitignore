@@ -2,4 +2,4 @@
 *.log
 node_modules
 .npm
-libs/config.js
+config/config.js
