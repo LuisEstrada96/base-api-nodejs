@@ -1,9 +1,22 @@
-exports.values = {
+module.exports = {
     debug : true,
 	port : 8080,
 	log : {
-		console_level : 'silly', 		// silly, debug, verbose, info, warn, error
-		file_level : 'info',		// info, warn, error
-		file : 'errors.log'
+		console : { level : 'silly' },
+		files : [
+			{
+				id : 'debug',
+				level : 'debug',
+				path : './logs/',
+				name : 'debug.log'
+			},
+			{
+				id : 'error',
+				level : 'error',
+				path : './logs/',
+				name : 'error.log'
+			}
+		],
+		morgan : { inmediate : true }
 	}
 }

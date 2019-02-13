@@ -1,8 +1,8 @@
-var config 	= require('../config/config').values;
-var status 	= require('../config/status').codes;
-var logger 	= require('../libs/logger').logger;
+const config 	= require('../config/config');
+const status 	= require('../config/http-status');
+const {logger}	= require('../libs/logger');
 
-var test = exports;
+const test = exports;
 
 test.init = function(){
 	return test;
