@@ -1,6 +1,6 @@
 const config 	= require('../config/config');
 const status 	= require('../config/http-status');
-const {logger}	= require('../libs/logger');
+const logger	= require('../libs/logger');
 
 const test = exports;
 

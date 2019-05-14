@@ -13,8 +13,8 @@ app.set('port', config.port || 8080);
 const router = express.Router();
 
 router.use(function(req, res, next){
-	logger.verbose('>', req.method, req._parsedUrl.pathname);
-	logger.debug('<<', req.query, req.body);
+	logger.verbose('>>>', req.method, req._parsedUrl.pathname);
+	logger.debug('>>', req.query, req.body);
 	next();
 });
 
@@ -26,5 +26,5 @@ router.get('/test', test.log);
 app.use('/', router);
 
 app.listen(app.get('port'), function(){
-	logger.info('listening on port ' + app.get('port') + '...');
+	logger.info('listening on port: ', app.get('port'));
 });

@@ -1,7 +1,23 @@
 const config = require('../config/config');
-const winston = require('winston');
+const { createLogger, format, transports, addColors } = require('winston');
+const { combine, timestamp, colorize, printf, padLevels } = format;
+const { SPLAT } = require('triple-beam');
+const { isObject } = require('lodash');
 
-winston.addColors({
+const all = format((info) => {
+	const splat = info[SPLAT] || [];
+	const message = formatObject(info.message);
+	const rest = splat.map(formatObject).join(' ');
+	info.message = `${message} ${rest}`;
+	return info;
+});
+
+function formatObject(param) {
+	if (isObject(param)) return JSON.stringify(param);
+	return param;
+}
+
+addColors({
 	error : 'red',
 	warn : 'yellow',
 	info : 'green',
@@ -10,22 +26,23 @@ winston.addColors({
 	silly : 'magenta'
 });
 
-const logger = winston.createLogger({
+const logger = createLogger({
 	level : 'silly',
 	levels : { error : 0, warn : 1, info : 2, verbose : 3, debug : 4, silly : 5 },
-	format: winston.format.combine(
-		winston.format.colorize(),
-    	winston.format.timestamp(),
-		winston.format.splat(),
-		winston.format.printf(({ timestamp, level, message, meta }) => {
-			return `${timestamp} ${level} ${message} ${meta ? JSON.stringify(meta, null, 1) : ''}`;
+	format: combine(
+		all(),
+		timestamp(),
+		colorize(),
+		padLevels(),
+		printf(({ timestamp, level, message }) => {
+			return `${timestamp} ${level} ${formatObject(message)}`;
 		})
 	),
 	silent : false
 });
 
 if(config.log.console && config.log.console.level != ''){
-	logger.add(new winston.transports.Console({
+	logger.add(new transports.Console({
 		level : config.log.console.level,
 		silent : false
 	}));
@@ -33,7 +50,7 @@ if(config.log.console && config.log.console.level != ''){
 
 if(config.log.files){
 	config.log.files.forEach(function(file){
-		logger.add(new winston.transports.File({
+		logger.add(new transports.File({
 			level : file.level,
 			silent : false,
 			filename : file.path + file.name,
