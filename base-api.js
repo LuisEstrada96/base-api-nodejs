@@ -1,30 +1,40 @@
 #!/bin/env node
 const config 		= require('./config/config');
 const logger 		= require('./libs/logger');
-const express 		= require('express');
+const mongodb 		= require('./libs/mongo');
 const bodyParser 	= require('body-parser');
+const express 		= require('express');
+const morgan 		= require('morgan');
 
 const app = express();
-
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
-app.set('port', config.port || 8080);
-
 const router = express.Router();
 
-router.use(function(req, res, next){
-	logger.verbose('>>>', req.method, req._parsedUrl.pathname);
-	logger.debug('>>', req.query, req.body);
-	next();
-});
+(async function() {
+	const db = await mongodb.connect();
 
-const test = require('./resources/test').init();
+	app.use(bodyParser.urlencoded({ extended: true }));
+	app.use(bodyParser.json());
+	app.set('port', config.port || 8080);
+	app.use(morgan('combined'));
 
-router.get('/', test.status);
-router.get('/test', test.log);
+	router.use(function(req, res, next){
+		logger.verbose('>>>', req.method, req._parsedUrl.pathname);
+		logger.debug('>>', req.query, req.body);
+		next();
+	});
 
-app.use('/', router);
+	const test = require('./resources/test').init(db);
 
-app.listen(app.get('port'), function(){
-	logger.info('listening on port: ', app.get('port'));
+	router.get('/', test.status);
+	router.get('/test', test.log);
+
+	app.use('/', router);
+
+	app.listen(app.get('port'), function(){
+		logger.info('listening on port: ', app.get('port'), '...');
+	});
+})()
+.catch((e)=> {
+	if ("stack" in e) logger.error(e.stack);
+	logger.error(e);
 });

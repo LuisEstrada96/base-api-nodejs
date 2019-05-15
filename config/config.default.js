@@ -1,5 +1,4 @@
 module.exports = {
-    debug : true,
 	port : 8080,
 	log : {
 		console : { level : 'silly' },
@@ -18,5 +17,9 @@ module.exports = {
 			}
 		],
 		morgan : { inmediate : true }
+	},
+	mongo : {
+		host : "mongodb://localhost/base-api",
+		name : 'base-api',
 	}
 }
