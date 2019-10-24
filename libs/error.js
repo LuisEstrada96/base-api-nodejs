@@ -5,58 +5,60 @@ const UNAUTHORIZED = 0x11;
 const NO_DEVICE_TOKEN = 0x12;
 const INVALID_PARAMS = 0x20;
 const INVALID_INPUT = 0x21;
-const DB_ERROR = 0x30;
-const SERVICE_ERROR = 0xA0;
+const ALREADY_EXISTS = 0x30;
+const NOT_EXISTS = 0x31;
+const SERVER_ERROR = 0xA0;
+const REMOTE_ERROR = 0xA1;
 const CUSTOM_ERROR = 0xFF;
 
-exports.auth = function(res){
-	res.statusCode = status.FORBIDDEN;
-	res.json(_error(FORBIDDEN, "Not authorized."));
-};
-
-exports.apiKey = function(res){
-	res.statusCode = status.UNAUTHORIZED;
-	res.json(_error(UNAUTHORIZED, "Bad authentication data."));
-};
-
-exports.deviceToken = function(res){
-	res.statusCode = status.UNAUTHORIZED;
-	res.json(_error(NO_DEVICE_TOKEN, "Bad device authentication data."));
-};
-
-exports.params = function(res) {
-    res.statusCode = status.BAD_REQUEST;
-    res.json(_error(INVALID_PARAMS, "Invalid params."));
+exports.auth = function(){
+	return _error(status.UNAUTHORIZED, FORBIDDEN, "Not authorized.");
 }
 
-exports.input = function(res, errors) {
-	res.statusCode = status.UNPROCESSABLE;
-    _input(res, errors);
+exports.apiKey = function(){
+	return _error(status.UNAUTHORIZED, UNAUTHORIZED, "Bad authentication data.");
 }
 
-exports.db = function(res, details){
-	res.statusCode = status.UNPROCESSABLE;
-    res.json(_error(DB_ERROR, "Error on database operation.", details));
-};
-
-exports.service = function(res, description, err){
-	res.statusCode = status.UNPROCESSABLE;
-	res.json(_error(SERVICE_ERROR, description, err));
+exports.deviceToken = function(){
+	return _error(status.UNAUTHORIZED, NO_DEVICE_TOKEN, "Bad device authentication data.");
 }
 
-exports.custom = function(res, description, err){
-	res.statusCode = status.UNPROCESSABLE;
-	res.json(_error(CUSTOM_ERROR, description, err));
+exports.params = function() {
+    return _error(status.UNPROCESSABLE, INVALID_PARAMS, "Invalid params.");
 }
 
-function _error(code, message, details) {
-    var error = { "error": { "code": code, "message": message } };
+exports.input = function(, errors) {
+	return _error(status.UNPROCESSABLE, INVALID_INPUT, "Invalid Input", _input(errors));
+}
+
+exports.alreadyExists = function() {
+    return _error(status.BAD_REQUEST, ALREADY_EXISTS, "Entity already exists.");
+}
+
+exports.notExists = function() {
+    return _error(status.BAD_REQUEST, NOT_EXISTS, "Entity doesn't exists.");
+}
+
+exports.remoteError = function(description, err){
+	return _error(status.FAILED_DEPENDENCY, REMOTE_ERROR, description, err);
+}
+
+exports.unknown = function(description, err){
+	return _error(status.UNKNOWN_ERROR, SERVER_ERROR, description, err);
+}
+
+exports.custom = function(description, err){
+	return _error(status.UNPROCESSABLE, CUSTOM_ERROR, description, err);
+}
+
+function _error(status, code, message, details) {
+    var error = { "error": { "status" : status, "code": code, "message": message } }
     if (details !== undefined)
         error.details = details;
     return error;
 }
 
-function _input(res, errors) {
+function _input(errors) {
     var messages = [];
     errors = errors || [];
     errors.forEach(function(error) {
@@ -66,5 +68,5 @@ function _input(res, errors) {
             message : error.message.replace(/\"/gi, "'")
         });
     });
-    res.json(_error(INVALID_INPUT, "Invalid Input", messages));
+    return messages;
 }

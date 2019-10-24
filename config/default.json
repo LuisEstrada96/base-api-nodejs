@@ -1,0 +1,18 @@
+{
+	"port" : 8080,
+	"log" : {
+		"console" : { "level" : "silly" },
+		"files" : [
+			{
+				"level" : "debug",
+				"path" : "./logs/",
+				"name" : "debug.log"
+			},
+			{
+				"level" : "error",
+				"path" : "./logs/",
+				"name" : "error.log"
+			}
+		]
+	}
+}
