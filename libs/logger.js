@@ -1,4 +1,4 @@
-const config = require('config');
+const config = require('config').get('logger');
 const { createLogger, format, transports, addColors } = require('winston');
 const { combine, timestamp, colorize, printf, padLevels } = format;
 const { SPLAT } = require('triple-beam');
@@ -41,15 +41,15 @@ const logger = createLogger({
 	silent : false
 });
 
-if(config.get('log.console') && config.get('log.console.level') != ''){
+if((config.console || {}).level){
 	logger.add(new transports.Console({
-		level : config.log.console.level,
+		level : config.console.level,
 		silent : false
 	}));
 }
 
-if(config.get('log.files')){
-	config.get('log.files').forEach(function(file){
+if(config.files){
+	config.files.forEach(function(file){
 		logger.add(new transports.File({
 			level : file.level,
 			silent : false,
@@ -60,4 +60,4 @@ if(config.get('log.files')){
 	});
 }
 
-module.exports = logger;
+module.exports.logger = logger;

@@ -3,3 +3,5 @@
 .env
 npm-debug.log*
 node_modules/
+logs/*
+!logs/.nonempty

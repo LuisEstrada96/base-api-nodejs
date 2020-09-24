@@ -1,31 +1,18 @@
 # ITS Base API
 
 ### Install API dependecies
-
-```sh
+```
 $ npm i
 ```
 
-### Runs the API
-
-```sh
-$ npm run start
-```
-
 ### Runs the API in developer mode
-
-```sh
+```
 $ npm run dev
 ```
 
-### Runs the API using forever
-
-```sh
-$ npm run forever
+### Runs the API
 ```
-
-### Restart API
-
-```sh
-$ npm run restart
+$ npm run start
 ```
+---
+Postman collection must be added inside .postman directory
