@@ -1,4 +1,5 @@
 #!/bin/env node
+require('dotenv').config();
 const config = require('config');
 
 const bodyParser = require('body-parser');
@@ -29,25 +30,23 @@ router.use(function(req, res, next){
 
 const _errorHandler = (err, req, res, next) => {
 	logger.error('_errorHandler =>', err.toString());
-	if(process.env.NODE_ENV == 'dev'){
-		logger.debug('<<', err.response);
-	}
 	res.status(err.status || 500);
-	if(err.response)
-		res.json(err.response);
-	else {
-		logger.error(err.stack);
-		res.end();
-	}
+	if(process.env.NODE_ENV == 'dev') logger.debug('<<', err.response);
+	if(err.response) res.json(err.response);
+	else { logger.error(err.stack); res.end(); }
 }
 
 (async () => {
-	const application = require('./resources/application');
+	const application = require('./resources/application').init();
 	const auth = require('./resources/auth').init();
 
 	router.get('/', application.status);
 	router.get('/app/logs', application.logs);
-	router.get('/app/headers', application.headers);
+	router.get('/app/headers/full', application.fullHeaders);
+	router.get('/app/headers/simple', application.simpleHeaders);
+
+	router.post('/auth/login', auth.apiKey, auth.login);
+	router.get('/auth/me', auth.apiKey, auth.verifyJWT, auth.me);
 
 	app.use('/', router);
 	app.use(_errorHandler);

@@ -8,13 +8,13 @@ const moment = require('moment');
 
 const APIKEY 			= config.apiKey;
 const JWT_SECRET 		= config.jwt.secret;
-const JWT_EXPIRES   	= config.jwt.expiresIn || '1h';
-const JWT_ISSUER   		= config.jwt.iss || null;
-const JWT_AUDIENCE 		= config.jwt.audience || null;
-const JWT_SUBJECT 		= config.jwt.subject || null;
+const JWT_EXPIRES   	= config.jwt.exp;
+const JWT_ISSUER   		= config.jwt.iss;
+const JWT_AUDIENCE 		= config.jwt.aud;
+const JWT_SUBJECT 		= config.jwt.sub;
 
 const JWT_VERIFY_OPT = {
-	complete : true,
+	complete : false,
 	ignoreExpiration : false,
 	audience : JWT_AUDIENCE,
 	issuer : JWT_ISSUER,
@@ -37,7 +37,7 @@ authRes.init = () => { return authRes; }
 authRes.apiKey = function(req, res, next){
 	logger.verbose('[auth,apiKey]', 'validating apikey');
 	let apiKey = req.headers.apiKey || req.headers.apikey || null;
-	if(apiKey == null || apiKey == APIKEY) throw new _e.AuthError();
+	if(apiKey == null || apiKey != APIKEY) throw new _e.AuthError();
 	next();
 }
 
@@ -57,19 +57,31 @@ authRes.verifyJWT = function(req, res, next){
 			logger.warn('[auth,verifyJWT]', 'invalid jwt: ', err.toString())
 			throw new _e.CredentialsError();
 		}
-		req.decoded = decoded.payload;
+		req.decoded = decoded;
 		next();
 	});
 };
 
 /**
-* Used by vuex after login method to obtain user data
+* Authentication method, returns a valid jwt
+**/
+
+authRes.login = function(req, res){
+	logger.verbose('[auth,login]', 'dummy login method');
+	let dummyUserData = { uid: 'foo' };
+	let jwt = _getSignedJWT(dummyUserData);
+	res.json({ jwt });
+}
+
+/**
+* Used by nuxt after login method to obtain user data
 * must be called after verifyJWT
 **/
 
 authRes.me = function(req, res){
 	logger.verbose('[auth,me]', 'getting user details');
-	res.json(req.decoded);
+	let { uid } = req.decoded;
+	res.json({ uid });
 }
 
 /**
