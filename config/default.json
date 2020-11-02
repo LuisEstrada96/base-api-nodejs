@@ -1,0 +1,21 @@
+{
+	"application" : {
+		"port" : 8080
+	},
+	"logger" : {
+		"console" : { "level" : "silly" },
+		"files" : [
+			{ "level" : "debug", "path" : "./logs/", "name" : "debug.log" },
+			{ "level" : "error", "path" : "./logs/", "name" : "error.log" }
+		]
+	},
+	"auth" : {
+		"apiKey" : "0649b5c724d99a679048c58d595ceb173d50998a",
+		"jwt" : {
+			"secret" : "=CHANGE-THIS-VALUE=",
+			"expiresIn" : "1h",
+			"iss" : null,
+			"aud" : null
+		}
+	}
+}
