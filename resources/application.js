@@ -3,18 +3,14 @@ const { logger } = require('../libs/logger');
 const { execSync } = require('child_process');
 
 const applicationRes = exports;
-let mongo;
-
-applicationRes.init = (mongoClient) => {
-	mongo = mongoClient;
-	return applicationRes;
-};
+applicationRes.init = () => { return applicationRes };
 
 applicationRes.status = async function(req, res) {
 	logger.verbose("[application,status]", "service status");
 	res.json({
 		uptime : parseInt(process.uptime()),
-		rev : await _gitinfo()
+		rev : await _gitinfo(),
+		env : process.env.NODE_ENV
 	});
 }
 
@@ -29,18 +25,25 @@ applicationRes.logs = function(req, res){
 	res.end();
 }
 
-applicationRes.headers = function(req, res) {
+applicationRes.simpleHeaders = function(req, res) {
 	logger.verbose("[application,headers]", "testing if headers are complete");
-	res.json((
-		(req.header("apiKey") != null || req.header("apikey") != null) &&
-		(req.header("platform") == 'android' || req.header("platform") == 'ios') &&
-		req.header("app") != null &&
-		req.header("version") != null &&
-		(req.header("versionString") != null || req.header("versionstring") != null) &&
-		(req.header("deviceToken") != null || req.header("devicetoken") != null) &&
-		(req.header("language") == "en" || req.header("language") == "es") &&
-		req.header("token") != null
-	));
+	res.json(( req.header("apiKey") != null && req.header("apikey") != null ));
+}
+
+applicationRes.fullHeaders = function(req, res) {
+    logger.verbose("[application,headers]", "Testing if headers are complete...");
+    res.json(
+        (
+            req.header("apiKey") != null &&
+            (req.header("platform") == 'android' || req.header("platform") == 'ios') &&
+            req.header("app") != null &&
+            req.header("version") != null &&
+            req.header("versionString") != null &&
+            req.header("deviceToken") != null &&
+            (req.header("language") == "en" || req.header("language") == "es") &&
+            req.header("token") != null
+        )
+    );
 }
 
 function _gitinfo(){

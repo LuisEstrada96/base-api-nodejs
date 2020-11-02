@@ -1,24 +1,22 @@
 {
 	"application" : {
-		"port" : 8080
+		"port" : 15123
 	},
 	"logger" : {
 		"console" : { "level" : "silly" },
 		"files" : [
-			{
-				"level" : "debug",
-				"path" : "./logs/",
-				"name" : "debug.log"
-			},
-			{
-				"level" : "error",
-				"path" : "./logs/",
-				"name" : "error.log"
-			}
+			{ "level" : "debug", "path" : "./logs/", "name" : "debug.log" },
+			{ "level" : "warn", "path" : "./logs/", "name" : "error.log" }
 		]
 	},
-	"mongo" : {
-		"host" : "mongodb://localhost/base-api",
-		"name" : "base-api"
+	"auth" : {
+		"apiKey" : "0649b5c724d99a679048c58d595ceb173d50998a",
+		"jwt" : {
+			"secret" : "set-for-app",
+			"exp" : "1h",
+			"iss" : "set-for-app",
+			"aud" : "set-for-app",
+			"sub" : "set-for-app"
+		}
 	}
 }

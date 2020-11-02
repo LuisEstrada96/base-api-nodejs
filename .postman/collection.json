@@ -1,0 +1,106 @@
+{
+	"info": {
+		"_postman_id": "e991febb-3628-4df5-bc00-3b6ea81cca9f",
+		"name": "Base API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "application",
+			"item": [
+				{
+					"name": "Get APP Status",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}{{base_port}}/",
+							"host": [
+								"{{base_url}}{{base_port}}"
+							],
+							"path": [
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Test APP Logs",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}{{base_port}}/app/logs",
+							"host": [
+								"{{base_url}}{{base_port}}"
+							],
+							"path": [
+								"app",
+								"logs"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "auth",
+			"item": [
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "8a281b27-43cd-4ca6-a331-5b90d004b4e6",
+								"exec": [
+									"if(responseCode.code == 200) {",
+									"    pm.environment.set(\"jwt\", JSON.parse(responseBody).jwt);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "apiKey",
+								"value": "{{apiKey}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}{{base_port}}/auth/login",
+							"host": [
+								"{{base_url}}{{base_port}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get user Data (nuxt)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": ""
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		}
+	],
+	"protocolProfileBehavior": {}
+}

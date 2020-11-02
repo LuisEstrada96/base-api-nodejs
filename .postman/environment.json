@@ -1,0 +1,29 @@
+{
+	"id": "64d2cedb-c78a-4d07-a6dc-eabd4b730b8c",
+	"name": "localhost:15123",
+	"values": [
+		{
+			"key": "base_url",
+			"value": "http://localhost",
+			"enabled": true
+		},
+		{
+			"key": "base_port",
+			"value": ":15123",
+			"enabled": true
+		},
+		{
+			"key": "jwt",
+			"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiJmb28iLCJpYXQiOjE2MDQzNTAyODQsImV4cCI6MTYwNDM1Mzg4NCwiYXVkIjoic2V0LWZvci1hcHAiLCJpc3MiOiJzZXQtZm9yLWFwcCIsInN1YiI6InNldC1mb3ItYXBwIn0.vwYxn0Vz-X-yniBubVj2TBOfdu4hh70ogVoXk3Q6_yg",
+			"enabled": true
+		},
+		{
+			"key": "apiKey",
+			"value": "0649b5c724d99a679048c58d595ceb173d50998a",
+			"enabled": true
+		}
+	],
+	"_postman_variable_scope": "environment",
+	"_postman_exported_at": "2020-11-02T21:12:10.077Z",
+	"_postman_exported_using": "Postman/7.34.0"
+}
